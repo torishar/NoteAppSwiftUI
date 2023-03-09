@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct NotesView: View {
     
     @EnvironmentObject var contentVM: ContentViewModel
     
     @State var folder: String = "Name folder"
+    
+    @State var selectedFilderId: ObjectId?
+    
     var body: some View {
-        NavigationView {
+        VStack {
             List {
                 Text("1")
                 Text("2")

@@ -13,6 +13,11 @@ struct ContentView: View {
     @ObservedObject var contentVM = ContentViewModel()
     @ObservedResults (Folder.self) var folders
     
+    @State private var showAlert = false
+    @State var folderName = ""
+    
+    @State var selectedFilderId: ObjectId? = nil
+    
     var body: some View {
         ZStack {
             NavigationView {
@@ -34,7 +39,7 @@ struct ContentView: View {
             }
             
             if contentVM.notesViewIsOpen {
-                NotesView()
+                NotesView(selectedFilderId: selectedFilderId)
                     .environmentObject(contentVM)
             }
         }
@@ -44,12 +49,24 @@ struct ContentView: View {
     @ViewBuilder
     func addFolder() -> some View {
         Button {
-            contentVM.notesViewIsOpen = true
+            showAlert = true
         } label: {
             Text("Add folder")
         }
+        .alert("Add new folder", isPresented: $showAlert) {
+            TextField("Folder name", text: $folderName)
+            Button("Add") {
+                let folder = Folder()
+                folder.name = folderName
 
-    }
+                $folders.append(folder)
+                
+                folderName = ""
+            }
+        }
+        
+        }
+
 }
 
 struct FoldersView_Previews: PreviewProvider {
