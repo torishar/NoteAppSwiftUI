@@ -12,11 +12,9 @@ struct ContentView: View {
     
     @ObservedObject var contentVM = ContentViewModel()
     @ObservedResults (Folder.self) var folders
-    
     @State private var showAlert = false
     @State var folderName = ""
-    
-    @State var selectedFilderId: ObjectId? = nil
+    @State var selectedFolderId: ObjectId? = nil
     
     var body: some View {
         ZStack {
@@ -24,23 +22,21 @@ struct ContentView: View {
                 List {
                     ForEach(folders, id: \.id) { folder in
                         NavigationLink {
-                            NotesView(folder: folder.name)
+                            NotesView(folder: folder)
+                                .environmentObject(contentVM)
                         } label: {
                             Text(folder.name)
+                            
                         }
 
                     }
                     .onDelete { index in
                         $folders.remove(atOffsets: index)
                     }
+                    
                 }
                 .navigationTitle("All notes")
                 .navigationBarItems(trailing: addFolder())
-            }
-            
-            if contentVM.notesViewIsOpen {
-                NotesView(selectedFilderId: selectedFilderId)
-                    .environmentObject(contentVM)
             }
         }
         
@@ -63,6 +59,7 @@ struct ContentView: View {
                 
                 folderName = ""
             }
+            Button("Cancel", role: .cancel, action: {})
         }
         
         }
